@@ -757,6 +757,14 @@
   <div class="bg-overlay"></div>
   <div id="app"></div>
 
+    <div id="autoplay-gate" class="autoplay-overlay" style="display: none;">
+  <div class="autoplay-card">
+    <h2 class="title-lg">SYSTEM STANDBY</h2>
+    <p class="muted">Signal detected. Interaction required to initialize audio stream.</p>
+    <button id="start-button" class="primary">TUNE IN NOW</button>
+  </div>
+</div>
+
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -764,6 +772,27 @@
     document.addEventListener("contextmenu", (e) => e.preventDefault(), { passive: true });
     document.addEventListener("dragstart", (e) => e.preventDefault(), { passive: true });
 
+    const [hasInteracted, setHasInteracted] = useState(false);
+
+// Show the gate if we haven't interacted yet
+useEffect(() => {
+  const gate = document.getElementById('autoplay-gate');
+  if (!hasInteracted) {
+    gate.style.display = 'grid';
+  } else {
+    gate.style.display = 'none';
+  }
+}, [hasInteracted]);
+
+const handleStart = () => {
+  setHasInteracted(true);
+  // This "dummy" play/pause unlocks the audio context for the whole session
+  const audio = document.querySelector('audio');
+  if (audio) {
+    audio.play().catch(() => {}); 
+  }
+};
+    
     const { useEffect, useMemo, useRef, useState } = React;
 
     const dateOptions = [
